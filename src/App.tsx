@@ -9,17 +9,14 @@ import {
   Star,
   ChevronDown,
   Code,
-  Palette,
   ArrowRight,
   ExternalLink,
   Award,
   Terminal,
-  Database,
   FileCode,
-  GitBranch,
 } from "lucide-react";
 
-// ✅ Define Particle type
+// Particle type ✅
 type Particle = {
   id: number;
   x: number;
@@ -29,11 +26,8 @@ type Particle = {
   size: number;
   opacity: number;
 };
-type FloatingIconProps = {
-  children: React.ReactNode;
-  delay?: number;
-  scrollY: number;
-};
+
+// Skill types ✅
 type Skill = {
   name: string;
   level: number;
@@ -41,51 +35,25 @@ type Skill = {
   special?: string;
 };
 
-type SkillCategory = {
-  name: string;
-  skills: Skill[];
-};
-
-const categories: SkillCategory[] = [
-  {
-    name: "Frontend",
-    skills: [
-      { name: "React", level: 90, color: "from-purple-400 to-purple-600" },
-      {
-        name: "TypeScript",
-        level: 85,
-        color: "from-blue-400 to-blue-600",
-        special: "Expert",
-      },
-    ],
-  },
-];
-
 const Portfolio: React.FC = () => {
-  // ✅ Typed states
   const [scrollY, setScrollY] = useState<number>(0);
-
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 0,
   });
 
-  const [particles, setParticles] = useState<Particle[]>([]);
-
+  // ✅ UseRef instead of useState for particles to avoid unused warning
+  const particlesRef = useRef<Particle[]>([]);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // ✅ Setup scroll & mouse listeners + init particles
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) =>
       setMousePosition({ x: e.clientX, y: e.clientY });
-    };
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("mousemove", handleMouseMove);
 
-    // Initialize particles
     const initialParticles: Particle[] = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
@@ -95,7 +63,7 @@ const Portfolio: React.FC = () => {
       size: Math.random() * 2 + 1,
       opacity: Math.random() * 0.5 + 0.2,
     }));
-    setParticles(initialParticles);
+    particlesRef.current = initialParticles;
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -103,7 +71,6 @@ const Portfolio: React.FC = () => {
     };
   }, []);
 
-  // ✅ Animate particles
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -117,25 +84,23 @@ const Portfolio: React.FC = () => {
     const animateParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      setParticles((prev) =>
-        prev.map((particle) => {
-          let newX = particle.x + particle.vx;
-          let newY = particle.y + particle.vy;
+      particlesRef.current = particlesRef.current.map((particle) => {
+        let newX = particle.x + particle.vx;
+        let newY = particle.y + particle.vy;
 
-          if (newX < 0 || newX > canvas.width) particle.vx *= -1;
-          if (newY < 0 || newY > canvas.height) particle.vy *= -1;
+        if (newX < 0 || newX > canvas.width) particle.vx *= -1;
+        if (newY < 0 || newY > canvas.height) particle.vy *= -1;
 
-          newX = Math.max(0, Math.min(canvas.width, newX));
-          newY = Math.max(0, Math.min(canvas.height, newY));
+        newX = Math.max(0, Math.min(canvas.width, newX));
+        newY = Math.max(0, Math.min(canvas.height, newY));
 
-          ctx.beginPath();
-          ctx.arc(newX, newY, particle.size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(139, 92, 246, ${particle.opacity})`;
-          ctx.fill();
+        ctx.beginPath();
+        ctx.arc(newX, newY, particle.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(139, 92, 246, ${particle.opacity})`;
+        ctx.fill();
 
-          return { ...particle, x: newX, y: newY };
-        })
-      );
+        return { ...particle, x: newX, y: newY };
+      });
 
       requestAnimationFrame(animateParticles);
     };
@@ -143,7 +108,7 @@ const Portfolio: React.FC = () => {
     animateParticles();
   }, []);
 
-  // ✅ Scroll to section safely
+  // ✅ Scroll to section
   const scrollToSection = (sectionId: string) => {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -241,6 +206,11 @@ const Portfolio: React.FC = () => {
       ],
     },
   ];
+  type FloatingIconProps = {
+    children: React.ReactNode;
+    delay?: number;
+    scrollY: number;
+  };
   const FloatingIcon: React.FC<FloatingIconProps> = ({
     children,
     delay = 0,
