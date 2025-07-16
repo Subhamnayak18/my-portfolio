@@ -19,15 +19,66 @@ import {
   GitBranch,
 } from "lucide-react";
 
-const Portfolio = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [particles, setParticles] = useState([]);
-  const canvasRef = useRef(null);
+// ✅ Define Particle type
+type Particle = {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  opacity: number;
+};
+type FloatingIconProps = {
+  children: React.ReactNode;
+  delay?: number;
+  scrollY: number;
+};
+type Skill = {
+  name: string;
+  level: number;
+  color: string;
+  special?: string;
+};
 
+type SkillCategory = {
+  name: string;
+  skills: Skill[];
+};
+
+const categories: SkillCategory[] = [
+  {
+    name: "Frontend",
+    skills: [
+      { name: "React", level: 90, color: "from-purple-400 to-purple-600" },
+      {
+        name: "TypeScript",
+        level: 85,
+        color: "from-blue-400 to-blue-600",
+        special: "Expert",
+      },
+    ],
+  },
+];
+
+const Portfolio: React.FC = () => {
+  // ✅ Typed states
+  const [scrollY, setScrollY] = useState<number>(0);
+
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
+
+  const [particles, setParticles] = useState<Particle[]>([]);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // ✅ Setup scroll & mouse listeners + init particles
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    const handleMouseMove = (e) => {
+
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
@@ -35,7 +86,7 @@ const Portfolio = () => {
     window.addEventListener("mousemove", handleMouseMove);
 
     // Initialize particles
-    const initialParticles = Array.from({ length: 50 }, (_, i) => ({
+    const initialParticles: Particle[] = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
@@ -52,11 +103,14 @@ const Portfolio = () => {
     };
   }, []);
 
+  // ✅ Animate particles
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
@@ -89,8 +143,12 @@ const Portfolio = () => {
     animateParticles();
   }, []);
 
-  const scrollToSection = (sectionId) => {
-    document.getElementById(sectionId).scrollIntoView({ behavior: "smooth" });
+  // ✅ Scroll to section safely
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const projects = [
@@ -183,8 +241,11 @@ const Portfolio = () => {
       ],
     },
   ];
-
-  const FloatingIcon = ({ children, delay = 0 }) => (
+  const FloatingIcon: React.FC<FloatingIconProps> = ({
+    children,
+    delay = 0,
+    scrollY,
+  }) => (
     <div
       className="absolute animate-bounce"
       style={{
@@ -256,16 +317,19 @@ const Portfolio = () => {
         id="home"
         className="relative h-screen flex items-center justify-center z-10"
       >
-        <FloatingIcon delay={0}>
+        <FloatingIcon delay={0} scrollY={scrollY}>
           <div className="text-4xl opacity-30 top-20 left-20">⚡</div>
         </FloatingIcon>
-        <FloatingIcon delay={1}>
+
+        <FloatingIcon delay={1} scrollY={scrollY}>
           <div className="text-3xl opacity-40 top-40 right-32">🚀</div>
         </FloatingIcon>
-        <FloatingIcon delay={2}>
+
+        <FloatingIcon delay={2} scrollY={scrollY}>
           <div className="text-5xl opacity-25 bottom-40 left-16">💻</div>
         </FloatingIcon>
-        <FloatingIcon delay={1.5}>
+
+        <FloatingIcon delay={1.5} scrollY={scrollY}>
           <div className="text-3xl opacity-35 bottom-20 right-20">🌟</div>
         </FloatingIcon>
 
@@ -493,7 +557,7 @@ const Portfolio = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {category.skills.map((skill, skillIndex) => (
+                  {category.skills.map((skill: Skill, skillIndex: number) => (
                     <div key={skill.name} className="relative">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-medium text-gray-300">
