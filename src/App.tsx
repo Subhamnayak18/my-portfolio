@@ -127,12 +127,12 @@ const Portfolio: React.FC = () => {
       gradient: "from-green-500 to-lime-500",
     },
     {
-      title: "Quantum Computing Simulator",
+      title: "Portfolio Website",
       description:
-        "Web-based quantum circuit designer with state visualization and quantum algorithm examples for educational purposes.",
-      tech: ["TypeScript", "D3.js", "WebAssembly", "Node.js"],
+        "My personal portfolio website showcasing projects, skills, and interactive UI built with React, Tailwind CSS, and TypeScript.",
+      tech: ["React", "Tailwind CSS", "Node.js", "TypeScript"],
       image: "⚛️",
-      link: "#",
+      link: "https://subhamnayak18.github.io/my-portfolio/",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
@@ -315,7 +315,7 @@ const Portfolio: React.FC = () => {
               >
                 <div className="w-full h-full rounded-full overflow-hidden">
                   <img
-                    src="/PHOTO.jpg"
+                    src="/my-portfolio/PHOTO.jpg"
                     alt="Subham Nayak"
                     className="w-full h-full object-cover"
                   />
@@ -326,12 +326,12 @@ const Portfolio: React.FC = () => {
           </div>
 
           <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-            <span className="inline-block animate-pulse">John</span>{" "}
+            <span className="inline-block animate-pulse">Subham</span>{" "}
             <span
               className="inline-block animate-pulse"
               style={{ animationDelay: "0.5s" }}
             >
-              Doe
+              Nayak
             </span>
           </h1>
           <div className="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
